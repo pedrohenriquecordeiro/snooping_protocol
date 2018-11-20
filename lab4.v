@@ -106,7 +106,7 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						if(buffer[2:1] === `CPU_READ_MISS)begin
 							/* muda de estado para compartilhado*/
 							buffer[53:52] = `COMPARTILHADO;
-							/* liga o modo de controlador snooping*/
+							/* registra referencia para o controlador snooping*/
 							buffer[`modo_snooping]  = 1'b1;
 							/* cache foco do snooping*/
 							buffer[55:54] = buffer[6:5];
@@ -119,7 +119,7 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end else if(buffer[2:1] === `CPU_WRITE_MISS)begin
 							/* muda de estado para exclusivo*/
 							buffer[53:52] =  `EXCLUSIVO;
-							/* liga o modo de controlador snooping*/
+							/* registra referencia para o controlador snooping*/
 							buffer[`modo_snooping]  = 1'b1;
 							/* cache foco do snooping*/
 							buffer[55:54] = buffer[6:5];
@@ -132,14 +132,9 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end
 
 						/*  
-							zeramos os outros modos     
+							tira referencia da cpu   
 						*/
-												
 						buffer[`modo_cpu]       = 1'b0;
-						buffer[`modo_memoria]   = 1'b0;
-						buffer[`modo_cache]     = 1'b0;
-						buffer[`write_back]		= 1'b0;
-
 					end
 				`MODIFICADO:
 					begin
@@ -149,18 +144,13 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						buffer[53:52] = `MODIFICADO;
 						/* liga o modo de controlador snooping*/
 						buffer[50] = 1'b1;
-						/* cache foco do snooping*/
-						buffer[55:54] = buffer[6:5];
+						/* registra referencia para o controlador snooping*/
+							buffer[`modo_snooping]  = 1'b1;
 
 						/*  
-							zeramos os outros modos     
+							tira referencia da cpu   
 						*/
-						
 						buffer[`modo_cpu]       = 1'b0;
-						buffer[`modo_memoria]   = 1'b0;
-						buffer[`modo_cache]     = 1'b0;
-						buffer[`write_back]		= 1'b0;
-
 					end
 
 
@@ -169,8 +159,8 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						if(barramento_entrada[2:1] === `CPU_READ_MISS)begin
 							/* se mantem no estado compartilhado*/
 							buffer[53:52] = `COMPARTILHADO;
-							/* liga o modo de controlador snooping*/
-							buffer[50] = 1'b1;
+							/* registra referencia para o controlador snooping*/
+							buffer[`modo_snooping]  = 1'b1;
 							/* cache foco do snooping*/
 							buffer[55:54] = buffer[6:5];
 							/* place read miss on bus*/
@@ -182,8 +172,8 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end else if(barramento_entrada[2:1] === `CPU_READ_HIT)begin
 							/* se mantem no estado compartilhado*/
 							buffer[53:52] = `COMPARTILHADO;
-							/* liga o modo de controlador snooping*/
-							buffer[50] = 1'b1;
+							/* registra referencia para o controlador snooping*/
+							buffer[`modo_snooping]  = 1'b1;
 							/* cache foco do snooping*/
 							buffer[55:54] = buffer[6:5];
 							/* endereco de bloco*/
@@ -191,8 +181,8 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end else if(barramento_entrada[2:1] === `CPU_WRITE_HIT)begin
 							/* muda de estado para exclusivo*/
 							buffer[53:52] = `EXCLUSIVO;
-							/* liga o modo de controlador snooping*/
-							buffer[50] = 1'b1;
+							/* registra referencia para o controlador snooping*/
+							buffer[`modo_snooping]  = 1'b1;
 							/* cache foco do snooping*/
 							buffer[55:54] = buffer[6:5];
 							/* place invalidate miss on bus*/
@@ -204,8 +194,8 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end else if(barramento_entrada[2:1] === `CPU_WRITE_MISS)begin
 							/* muda de estado para exclusivo*/
 							buffer[53:52] = `EXCLUSIVO;
-							/* liga o modo de controlador snooping*/
-							buffer[50] = 1'b1;
+							/* registra referencia para o controlador snooping*/
+							buffer[`modo_snooping]  = 1'b1;
 							/* cache foco do snooping*/
 							buffer[55:54] = buffer[6:5];
 							/* place write miss on bus*/
@@ -217,13 +207,9 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end
 
 						/*  
-							zeramos os outros modos     
+							tira referencia da cpu   
 						*/
-						
 						buffer[`modo_cpu]       = 1'b0;
-						buffer[`modo_memoria]   = 1'b0;
-						buffer[`modo_cache]     = 1'b0;
-						buffer[`write_back]		= 1'b0;
 
 					end
 
@@ -235,8 +221,8 @@ module snooping_executa(barramento_entrada,barramento_saida);
 							buffer[53:52] = `COMPARTILHADO;
 							/* liga o modo de controlador snooping*/
 							buffer[50] = 1'b1;
-							/* cache foco do snooping*/
-							buffer[55:54] = buffer[6:5];
+							/* registra referencia para o controlador snooping*/
+							buffer[`modo_snooping]  = 1'b1;
 							/* place read miss on bus*/
 							buffer[61:60] = `READ_MISS_ON_BUS;
 							/* caches focos do place on bus */
@@ -248,8 +234,8 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end else if(barramento_entrada[2:1] === `CPU_READ_HIT)begin
 							/* se mantem no estado exclusivo*/
 							buffer[53:52] = `MODIFICADO;
-							/* liga o modo de controlador snooping*/
-							buffer[50] = 1'b1;
+							/* registra referencia para o controlador snooping*/
+							buffer[`modo_snooping]  = 1'b1;
 							/* cache foco do snooping*/
 							buffer[55:54] = buffer[6:5];
 							/* endereco de bloco*/
@@ -259,8 +245,8 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end else if(barramento_entrada[2:1] === `CPU_WRITE_HIT)begin
 							/* se mantem no estado exclusivo*/
 							buffer[53:52] = `MODIFICADO;
-							/* liga o modo de controlador snooping*/
-							buffer[50] = 1'b1;
+							/* registra referencia para o controlador snooping*/
+							buffer[`modo_snooping]  = 1'b1;
 							/* cache foco do snooping*/
 							buffer[55:54] = buffer[6:5];
 							/* endereco de bloco*/
@@ -270,8 +256,8 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end else if(barramento_entrada[2:1] === `CPU_WRITE_MISS)begin
 							/* se mantem no estado exclusivo*/
 							buffer[53:52] = `MODIFICADO;
-							/* liga o modo de controlador snooping*/
-							buffer[50] = 1'b1;
+							/* registra referencia para o controlador snooping*/
+							buffer[`modo_snooping]  = 1'b1;
 							/* cache foco do snooping*/
 							buffer[55:54] = buffer[6:5];
 							/* endereco de bloco*/
@@ -281,17 +267,14 @@ module snooping_executa(barramento_entrada,barramento_saida);
 						end
 
 						/*  
-								zeramos os outros modos     
+							tira referencia da cpu   
 						*/
-						
 						buffer[`modo_cpu]       = 1'b0;
-						buffer[`modo_memoria]   = 1'b0;
-						buffer[`modo_cache]     = 1'b0;
 					end
 				default:
 					begin 
-						/* faz nada */
-
+						/* tira todas as referencias */
+						buffer[`modo_snooping]     = 1'b0;
 						buffer[`modo_cpu]       = 1'b0;
 						buffer[`modo_memoria]   = 1'b0;
 						buffer[`modo_cache]     = 1'b0;
@@ -312,7 +295,7 @@ module snooping_escuta(estado_inicial,estado_final,barramento_entrada,barramento
 
 	reg [`tamanho_barramento:0]buffer;
 	reg [1:0]buffer_de_estado;
-	always@(estado_inicial)begin
+	always@(barramento_entrada)begin
 		buffer = barramento_entrada;
 		/* o case avalia em qual estado o bloco da cache esta */
 		case(estado_inicial)
@@ -324,15 +307,10 @@ module snooping_escuta(estado_inicial,estado_final,barramento_entrada,barramento
 					*/
 
 					buffer_de_estado = `INVALIDO;
-
-					/* 
-						zeramos os outros modos     
-					*/
-
-					buffer[`modo_snooping]  = 1'b0;
-					buffer[`modo_cpu]  = 1'b0;
-					buffer[`modo_memoria]  = 1'b0;
-					buffer[`modo_cache]   = 1'b0;
+						/*  
+							tira referencia do modo snooping
+						*/
+						buffer[`modo_snooping] = 1'b0;
 					
 				end
 
@@ -346,14 +324,10 @@ module snooping_escuta(estado_inicial,estado_final,barramento_entrada,barramento
 					*/
 					buffer_de_estado = `MODIFICADO;
 
-					/* 
-						zeramos os outros modos     
+					/*  
+							tira referencia do modo snooping
 					*/
-					
-					buffer[`modo_snooping]  = 1'b0;
-					buffer[`modo_cpu]  = 1'b0;
-					buffer[`modo_memoria]  = 1'b0;
-					buffer[`modo_cache]   = 1'b0;
+					buffer[`modo_snooping] = 1'b0;
 
 
 				end
@@ -361,65 +335,56 @@ module snooping_escuta(estado_inicial,estado_final,barramento_entrada,barramento
 
 			`COMPARTILHADO:
 				begin
-					if(barramento_entrada[61:60] === `READ_MISS_ON_BUS)begin
+					if(buffer[61:60] === `READ_MISS_ON_BUS)begin
 						buffer_de_estado = `COMPARTILHADO;
-					end else if(barramento_entrada[61:60] === `WRITE_MISS_ON_BUS )begin
+					end else if(buffer[61:60] === `WRITE_MISS_ON_BUS )begin
 						buffer_de_estado = `INVALIDO;
-					end else if(barramento_entrada[61:60] === `INVALIDATE_ON_BUS)begin
+					end else if(buffer[61:60] === `INVALIDATE_ON_BUS)begin
 						buffer_de_estado = `INVALIDO;
-					end else if(barramento_entrada[61:60] === `WRITE_BACK_BLOCK_ON_BUS)begin
+					end else if(buffer[61:60] === `WRITE_BACK_BLOCK_ON_BUS)begin
 						/* nao faz nada */
 					end
 
-					/* 
-						zeramos os outros modos     
+					/*  
+						tira referencia do modo snooping
 					*/
-
-					buffer[`modo_snooping]  = 1'b0;
-					buffer[`modo_cpu]  = 1'b0;
-					buffer[`modo_memoria]  = 1'b0;
-					buffer[`modo_cache]   = 1'b0;
-
+					buffer[`modo_snooping] = 1'b0;
 				end
 
 
 			`EXCLUSIVO:
 				begin
-					if(barramento_entrada[61:60] === `READ_MISS_ON_BUS)begin
+					if(buffer[61:60] === `READ_MISS_ON_BUS)begin
 						buffer_de_estado = `COMPARTILHADO;
 						/* abort memory access */
 						buffer[`rfo]  = 1'b1;
 						/* write back block */  
 						buffer[`write_back] = 1'b1;
-					end else if(barramento_entrada[61:60] === `WRITE_MISS_ON_BUS)begin
+					end else if(buffer[61:60] === `WRITE_MISS_ON_BUS)begin
 						buffer_de_estado = `INVALIDO;
 						/* abort memory access */
 						buffer[`rfo]  = 1'b1; 
 						/* write back block */  
 						buffer[`write_back] = 1'b1;
-					end else if(barramento_entrada[61:60] === `INVALIDATE_ON_BUS)begin
+					end else if(buffer[61:60] === `INVALIDATE_ON_BUS)begin
 						/* nao faz nada */
-					end else if(barramento_entrada[61:60] === `WRITE_BACK_BLOCK_ON_BUS)begin
+					end else if(buffer[61:60] === `WRITE_BACK_BLOCK_ON_BUS)begin
 						/* nao faz nada */
 					end
 
-					/* 
-						zeramos os outros modos     
+					/*  
+						tira referencia do modo snooping
 					*/
-
-					buffer[`modo_snooping]  = 1'b0;
-					buffer[`modo_cpu]  = 1'b0;
-					buffer[`modo_memoria]  = 1'b0;
-					buffer[`modo_cache]   = 1'b0;
+					buffer[`modo_snooping] = 1'b0;
 
 				end
 			default:
 				begin
-					/* faz nada*/
-					buffer[`modo_snooping]  = 1'b0;
-					buffer[`modo_cpu]  = 1'b0;
-					buffer[`modo_memoria]  = 1'b0;
-					buffer[`modo_cache]   = 1'b0;
+					/* tira todas as referencias */
+					buffer[`modo_snooping]     = 1'b0;
+					buffer[`modo_cpu]       = 1'b0;
+					buffer[`modo_memoria]   = 1'b0;
+					buffer[`modo_cache]     = 1'b0;
 				end
 		endcase
 		estado_final = buffer_de_estado;
